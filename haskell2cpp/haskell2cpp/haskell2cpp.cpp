@@ -1,20 +1,79 @@
-// haskell2cpp.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
+#include <algorithm>
 #include <iostream>
+#include <string>
+
+using std::string;
+
+void Composition();
+void Flip();
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    Composition();
+    Flip();
 }
 
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
+string Exclaim(const string& str)
+{
+    string res = str;
+    res.push_back('!');
+    return res;
 
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
+}
+
+string Capitalize(const string& str)
+{
+    string res = str;
+    std::transform(res.begin(), res.end(), res.begin(), ::toupper);
+    return res;
+}
+
+constexpr auto compose = [](auto f, auto g)
+{
+    // Capture by value.
+    ////return [f, g](auto x) {}
+
+    // Capture all by value.
+    return [=](auto x)
+    {
+        return f(g(x));
+    };
+};
+
+void Composition()
+{
+    using namespace std;
+    const string text = "bring in the clowns";
+    //cout << Exclaim(Capitalize(text)) << endl;
+
+    auto Shout = compose(Exclaim, Capitalize);
+    cout << Shout(text) << endl;
+}
+
+double Ratio(int a, int b)
+{
+    return a / (double)b;
+}
+
+double FlipRatio(int a, int b)
+{
+    return Ratio(b, a);
+}
+
+constexpr auto flip = [](auto f)
+{
+    return [=](auto a, auto b)
+    {
+        return f(b, a);
+    };
+};
+
+void Flip()
+{
+    using namespace std;
+    const auto a{ 2 };
+    const auto b{ 3 };
+    //cout << Ratio(a, b) << endl << FlipRatio(a, b) << endl;
+
+    cout << Ratio(a, b) << endl << flip(Ratio)(a, b) << endl;
+}
