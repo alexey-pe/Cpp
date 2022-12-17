@@ -1,3 +1,5 @@
+// https://youtu.be/AVpCdZ_RrpA
+
 #include <algorithm>
 #include <iostream>
 #include <string>
@@ -18,7 +20,6 @@ string Exclaim(const string& str)
     string res = str;
     res.push_back('!');
     return res;
-
 }
 
 string Capitalize(const string& str)
